@@ -1,0 +1,28 @@
+# Schem Converter
+
+A website for converting Litematica `.litematic` schematics between Minecraft versions — the
+same job as the [Schem-Converter Discord bot](https://github.com/CodeW4VE/Schem-Converter), on
+the web. Powered by [`@froyln/schem-convert-lib`](https://www.npmjs.com/package/@froyln/schem-convert-lib).
+
+Drop a `.litematic` file, see its detected source version, pick a target version, and download
+the converted file along with a report of any block/item substitutions made.
+
+## Develop
+
+```bash
+npm install
+npm run dev
+```
+
+## Build & run
+
+```bash
+npm run build
+npm start
+```
+
+## Test
+
+```bash
+npm test
+```
