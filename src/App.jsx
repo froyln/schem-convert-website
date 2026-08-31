@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
+// Empty by default so a same-origin deploy (npm run build && npm start, or
+// the Vite dev server) keeps using relative /api/... paths. Set at build
+// time for a split deploy (e.g. GitHub Pages frontend + separately hosted
+// API) where the frontend isn't served from the API's origin.
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export default function App() {
   const [theme, setTheme] = useState(
     () => document.documentElement.getAttribute('data-theme') || 'dark'
@@ -14,7 +20,7 @@ export default function App() {
   const [showChanges, setShowChanges] = useState(false);
 
   useEffect(() => {
-    fetch('/api/versions')
+    fetch(`${API_BASE}/api/versions`)
       .then((r) => r.json())
       .then((d) => {
         setTargets(d.targets);
@@ -38,7 +44,7 @@ export default function App() {
     if (!f) return;
     try {
       const buf = await f.arrayBuffer();
-      const res = await fetch('/api/inspect', { method: 'POST', body: buf });
+      const res = await fetch(`${API_BASE}/api/inspect`, { method: 'POST', body: buf });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not inspect file');
       setDetected(data.label);
@@ -54,7 +60,7 @@ export default function App() {
     setResult(null);
     try {
       const buf = await file.arrayBuffer();
-      const res = await fetch(`/api/convert?to=${encodeURIComponent(target)}`, {
+      const res = await fetch(`${API_BASE}/api/convert?to=${encodeURIComponent(target)}`, {
         method: 'POST',
         headers: { 'X-Filename': file.name },
         body: buf,

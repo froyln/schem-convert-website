@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: schem-convert-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: node server.js

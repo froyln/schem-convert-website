@@ -12,6 +12,18 @@ const TARGETS = [...Object.keys(SUPPORTED), PRE_FLATTENING_MC_VERSION];
 // connect middleware (Vite's dev server) — only a full express() app does
 // that prototype setup on every request. Export the app itself.
 const router = express();
+
+// The GitHub Pages frontend and this API are served from different origins,
+// so every request needs CORS headers. It's a public, stateless conversion
+// endpoint (same as the Discord bot), so allowing any origin is fine.
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, X-Filename');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
 // fetch() sends raw ArrayBuffer bodies with no Content-Type header, and
 // type-is (which express.raw uses to decide whether to parse) treats a
 // missing header as "don't parse" even with type: '*/*' — so match everything.

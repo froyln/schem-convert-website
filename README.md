@@ -27,3 +27,22 @@ npm start
 ```bash
 npm test
 ```
+
+## Deploy
+
+GitHub Pages only serves static files, so the frontend and API deploy separately:
+
+- **Frontend** — `.github/workflows/deploy-pages.yml` builds and deploys `dist/` to GitHub Pages
+  on every push to `main`. It builds with `VITE_BASE=/schem-convert-website/` (the Pages subpath)
+  and `VITE_API_URL` set from the repo variable `API_URL`.
+- **API** — deploy `render.yaml` as a Render Blueprint (or run `node server.js` on any Node
+  host). Once you have its URL, set it as a repo variable so the next Pages build picks it up:
+
+  ```bash
+  gh variable set API_URL --body "https://<your-api>.onrender.com"
+  ```
+
+  Then re-run the Pages workflow (push, or `gh workflow run deploy-pages.yml`).
+
+Building without `VITE_BASE`/`VITE_API_URL` set (the default) keeps `npm run build && npm start`
+working as a single self-hosted app, same-origin API included.
